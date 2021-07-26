@@ -1,0 +1,101 @@
+<div ng-include="'views/nav-not-connected.html'"> 
+</div> 
+<div ng-controller="" class="monCompte">
+	<div class="container" style="margin-top:20px;">
+
+		<div  class="row" >
+      		<div class="col-lg-12">
+        		<span style="color:gray;">Accueil</span><span class="glyphicon glyphicon-chevron-right " style=" font-size:10px; margin-left:5px; margin-right:5px; color:gray;"></span><span style="color:gray;">mes informations personnelles</span>
+      		</div>
+    </div>
+   
+    	<div class="row" style="margin-top:30px;">
+
+    		<div class="col-lg-12">
+      			<h4 style="height:30px;border-bottom:1px solid gray;font-size:17px; margin-bottom:20px;">Mon compte</h4>
+      		</div>
+    	  </div>
+
+      <div class="row">
+        <h4 style="height:30px;border-bottom:1px solid gray;font-size:16px; margin-bottom:20px;">Mon adresses de livraison
+        </h4>
+
+          <form class="form-horizontal" style="padding-top:20px; font-size:14px; margin-left:30px;">
+            <div class="form-group">
+              <span class="control-label col-lg-2" for="nom">Nom du receptionnaire<sup>*</sup></span>
+              <div class="col-lg-10">
+                <input type="input" class="form-control no-radius" id="nom" placeholder="Entrez votre nom">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <span class="control-label col-lg-2" for="prenom">Prenom du receptionnaire<sup>*</sup></span>
+              <div class="col-lg-10">
+                <input type="input" class="form-control no-radius" id="prenom" placeholder="Entrez votre prenom">
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <span class="control-label col-lg-2" for="prenom">telephone du receptionnaire<sup>*</sup></span>
+              <div class="col-lg-10">
+              <input type="input" class="form-control no-radius" id="prenom" placeholder="modifier votre email ou votre numero de telephone">
+              </div>
+           </div>
+
+            <div class="form-group ">
+              <div class="col-lg-6">
+              <span class="control-label col-lg-4" for="sexe">Region<sup>*</sup></span>
+              <div class="col-lg-8">
+                <div class=" row col-lg-10" style="margin-right:0px;">
+                  <select class="form-control no-radius" id="sexe" value="jour">
+                    <option>centre</option>
+                    <option>Sud</option>
+                    <option>Littoral</option>
+                  </select>
+                </div>
+              </div>
+              </div>
+              <div class="col-lg-6">
+              <span class="control-label col-lg-2" for="sexe">Ville<sup>*</sup></span>
+              <div class="col-lg-8">
+                <div class=" row col-lg-10" style="margin-right:0px;">
+                  <select class="form-control no-radius" id="sexe" value="jour">
+                    <option>centre</option>
+                    <option>Sud</option>
+                    <option>Littoral</option>
+                  </select>
+               </div>
+              </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <span class="control-label col-lg-2" for="nom">Localite<sup>*</sup></span>
+              <div class="col-lg-10">
+                <textarea class="form-control no-radius" id="nom" placeholder="Localiser le lieu de livraison">
+                
+                </textarea>
+              </div>
+            </div>
+        </div>
+
+
+          <div class="form-group">
+            <div class="col-lg-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-warning no-radius">enregistrer les modifications</button>
+          </div>
+         </div>
+
+          </form>
+        </div>
+
+
+      </div>
+
+
+
+
+    </div>
+
+</div>

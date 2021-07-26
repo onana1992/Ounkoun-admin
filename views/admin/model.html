@@ -1,0 +1,998 @@
+<div class="admin container-fluid" ng-controller="AdminModelCtrl" >
+
+	<div style="text-align:center;margin-top:0px;background-color:rgba(0,0,0,0.6);height:50px;color:white;margin-bottom:10px;">
+		<h3 style="padding-top:10px;">Tableau de bord d'administration de Ounkoun</h3>
+	</div>
+
+	 <div class="col-lg-2 nav-gauche" style="height:500px;width:200px;color:white;">
+        <ul class="vertical-menu" style="color:white; margin-top:30px;">
+		   
+			<li>
+				<a href="#!/admin/marques">GESTIONS DES MARQUES 
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/categories">GESTIONS DES CATEGORIES
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/produits">GESTIONS DES PRODUITS
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/utilisateurs">GESTION DES UTILISATEURS </a>
+			</li>
+
+		    <li>
+				<a href="#!/admin/commandes">GESTION DES COMMANDES
+				</a>
+			</li>
+
+			<li>
+		        <a href="#!/admin/boutique">GESTION DES BOUTIQUES
+		        </a>
+      		</li>
+
+			<li>
+				<a href="#!/admin/notifications">GESTION DES NOTIFICATIONS
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/bannieres">GESTION DES BANNIERES
+				</a>
+			</li>
+
+        </ul> 
+    </div> 
+    <div id="" class="col-lg-8" style="padding-right:0px;margin-top:20px; margin-" >
+    	<h4 style="border-bottom:1px solid gray;padding-bottom:10px;"> gestion du produits: {{productName}}</h4>
+    	
+        <p style="text-align:center;"><button  data-toggle="modal" href="#createModel"  style="color:orange;border-color:;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">creer un nouveau model</button>
+        </p>
+        <div style="margin-left:50px;">
+            
+	        <table datatable="ng" id="mytable" class="row-border hover">
+			    <thead>
+				    <tr>
+				        <th style="text-align:center;">ID</th>
+				        <th style="text-align:center;"">Nom</th>
+				        <th style="text-align:center;"">image </th>
+				        <th style="text-align:center;">Actions</th>
+				    </tr>
+			    </thead>
+			    <tbody>
+			    	<tr ng-repeat="model in  models">
+				        <td style="text-align:center;">{{$index +1}}</td>
+				        <td style="text-align:center;"> {{model.name}} </td>
+				        <td style="text-align:center;"> <img ng-src="{{baseUrl}}image/{{model.idImage}}"      height="40" width="40"> </td>
+				        <td style="text-align:center;"><button ng-click="selectModel(model)" data-toggle="modal" href="#modifiedModel"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Modifier</button> 
+				        <button ng-click="selectModel(model)" data-toggle="modal" href="#deleteModel"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button>
+				        </td>  
+			    </tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="createModel" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Creer un nouveau model</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        		    <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un model portant ce nom existe deja</p>
+        			</div> 
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm"  ng-submit="createModel()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+
+	          				<div class="col-lg-12 " style="margin-bottom:10px;">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"> <span>Vendeur du produit</span>
+	            				</p>
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-2 " for="cat"> Vendeur<sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-10">
+  										<select class="form-control" name="vendeur" id="vendeur" ng-model="selectedVendeur" ng-options="item.name for item in vendeurs"  required>
+  										<option value="">
+  											choisir un vendeur
+  										</option>
+  										</select>
+  										<div class="error" ng-show="myForm.vendeur.$invalid && myForm.category.$dirty">
+		                  				<span ng-show="myForm.vendeur.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                				</div>
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>detail du model</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterDetail()">Ajouter un detail</button></span>
+	            				</p>
+	            				<div class="row" ng-show="!details.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucun detail ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="detail in details">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomDetail"  ng-model="detail.name" class="form-control no-radius" id="nomDetail" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm.nomDetail.$invalid
+			                					  && myForm.nomDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.nomDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurDetail"  ng-model="detail.value" class="form-control no-radius" id="valeurDetail" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm.valeurDetail.$invalid && myForm.valeurDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.valeurDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerDetail($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>caracteristiques du model</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterCar()">Ajouter une carateristique</button></span></p>
+	            				<div class="row" ng-show="!caracteritiques.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucune caracteristique ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="car in caracteritiques">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomCat"  ng-model="car.name" class="form-control no-radius" id="nomCat" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm.nomCat.$invalid && myForm.nomCat.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.nomCat.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="scat">Unite</span>
+			              				<div class="col-lg-8">
+												<div class="col-lg-12">
+			                					<input type="input" name="unite"  ng-model="car.unity" class="form-control no-radius" id="unite" placeholder="Unite" >
+			             			 		</div>
+			             			 	</div>
+			             			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeur"  ng-model="car.value" class="form-control no-radius" id="valeur" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm.valeur.$invalid && myForm.valeur.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.valeur.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerCar($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Quantite, popularite et poids</span><span class="pull-right">
+	            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Quantite*:</span>
+			              				<div class="col-lg-8">
+			                				<input type="number" name="quantity"  ng-model="quantity.value" class="form-control no-radius" id="quantity" placeholder="" required>
+			                				<div class="error" ng-show="myForm.quantity.$invalid && myForm.quantity.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm.quantity.$error.required">
+			                    					quantite en stock requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Taille:</span>
+			              				<div class="col-lg-8">
+			                				<input type="input" name="taille"  ng-model="taille.value" class="form-control no-radius" id="taille" placeholder="">
+			             			 	</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Poids*:</span>
+			              				<div class="col-lg-8">
+			                				<select class="form-control" name="weight" id="weight" ng-model="weight.value"  required>
+			                					<option value="">choisir le poids</option>
+  												<option value="1">SMALL</option>
+  												<option value="2">MEDIUM</option>
+  												<option value="3">BIG</option>
+  											</select>
+
+			                				<div class="error" ng-show="myForm.weight.$invalid && myForm.weight.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm.weight.$error.required">
+			                    					poids requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Popularite*:</span>
+			              				<div class="col-lg-8">
+			                				<input type="number" name="popularity"  ng-model="popularity.value" class="form-control no-radius" id="popularity" placeholder="" required>
+			                				<div class="error" ng-show="myForm.popularity.$invalid && myForm.popularity.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm.popularity.$error.required">
+			                    					popularite requise
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div> 
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Images  du model</span>
+	            				</p>
+	            				<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-3" for="password">Photo du model:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendImage1(photo)" ng-model="photo" name="file1"    
+	             								accept="image/*" ngf-max-size="2MB" required
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm.file1.$error.required">*required</i><br>
+	      								<i ng-show="myForm.file1.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm.file1.$valid && !isUploading" ngf-thumbnail="photo" class="thumb"> 
+	          							<button type="button" ng-click="photo = null" ng-show="photo && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 1:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendImage2(bigPhoto1)" ng-model="bigPhoto1" name="file2"    
+	             								accept="image/*" ngf-max-size="2MB" required
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm.file2.$error.required">*required</i><br>
+	      								<i ng-show="myForm.file2.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm.file2.$valid && !isUploading" ngf-thumbnail="bigPhoto1" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto1 = null" ng-show="bigPhoto1 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 2:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendImage3(bigPhoto2)" ng-model="bigPhoto2" name="file3"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm.file3.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm.file3.$valid && !isUploading" ngf-thumbnail="bigPhoto2" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto2 = null" ng-show="bigPhoto2 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 3:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendImage4(bigPhoto3)" ng-model="bigPhoto3" name="file4"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm.file4.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm.file4.$valid && !isUploading" ngf-thumbnail="bigPhoto3" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto3 = null" ng-show="bigPhoto3 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 4:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendImage4(bigPhoto4)" ng-model="bigPhoto4" name="file5"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm.file5.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm.file5.$valid && !isUploading" ngf-thumbnail="bigPhoto4" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto4 = null" ng-show="bigPhoto4 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+	            			</div>   
+
+	            			<div class="col-lg-12 ">
+	            				<p  style="border-bottom:1px solid gray; font-size:16px;"><span>vente en detail </span>
+	            				</p>
+	            				<div>
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Prix:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="prixDetail"  ng-model="retailSale.prix" class="form-control no-radius" id="prixDetail" placeholder="" ng-required="true">
+			                				<div class="error" 
+			                				ng-show="myForm.prixDetail.$invalid && 
+			                					myForm.prixDetail.$dirty">
+			                  					<span style="color:red; font-style:italic"ng-show="myForm.prixDetail.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Prix promotionel:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="prixPromoDetail"  ng-model="retailSale.promoPrice" class="form-control no-radius" id="categorie" placeholder="" ng-required="true">
+			                				<div class="error" ng-show="myForm.prixPromoDetail.$invalid && myForm.prixPromoDetail.$dirty">
+			                  					<span style="color:red; font-style:italic;" ng-show="myForm.prixPromoDetail.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            			
+		            				<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Produit en promotion
+				              					<label ><input type="radio" ng-model="isDetailInPromotion.value" ng-value="true" name="isDetailInPromotion" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="isDetailInPromotion.value" ng-value="false" name="isDetailInPromotion">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Produit virtuel
+				              					<label ><input type="radio" ng-model="isVirtual.value" ng-value="true" name="isVirtual" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="isVirtual.value" ng-value="false" name="isVirtual">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-6">
+            							<span class="control-label col-lg-3" for="sexe">Date de fin de promo<sup>*</sup>
+            							</span>
+            							<div class="col-lg-8">
+              								<input type="input" name="dateFinDetailPromo" ng-model="dateFinDetailPromo.value" ng-pattern="matchPatternLogin"  class="form-control no-radius"  placeholder="date fin promo" required>
+              								<div><span style="font-style:italic">format:AAAA-MM-JJ</span></div>
+              								<div class="error" ng-show="myForm.dateFinDetailPromo.$invalid && myForm.dateFinDetailPromo.$dirty">
+	                							<span style="color:red; font-style:italic" ng-show="myForm.dateFinDetailPromo.$error.required">
+	                 								 Entrer une valeur
+	                							</span>
+								                <span style="color:red; font-style:italic" ng-show="myForm.dateFinDetailPromo.$error.pattern">
+								                   Entrer une date valide
+								                </span>
+              								</div>
+          								</div> 
+	            					</div>
+	            				</div>
+	            			</div>  
+ 
+	            		 
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer le produit</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="deleteModel" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Supprimer une une categorie</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Suppression du model,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoading">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment supprimer le model {{selectedModel.name}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmSupprimerModel()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button> 
+	          				<button ng-click="annulerSuppressionCategorie()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="modifiedModel" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Modifier le model: {{selectedModel.name}}</h4>
+      			</div>
+      			<div class="modal-body">
+      		<!-- {{selectedModel}} -->
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        		    <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un model portant ce nom existe deja</p>
+        			</div> 
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm1"  ng-submit="modifiedModel()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+
+		            		<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Nom du produit</span>
+	            				</p>
+	            				<div class="row">
+			              			<div class=" form-group col-lg-12">
+			              				<span class="control-label col-lg-1" for="nom">Nom*:</span>
+			              				<div class="col-lg-10">
+			                				<input type="input" name="name"  ng-model="selectedModel.name" class="form-control no-radius" id="name" placeholder="" required>
+			                				<div class="error" ng-show="myForm1.name.$invalid && myForm1.name.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm1.name.$error.required">
+			                    					nom requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+			             		</div>	
+		            			</div>
+		            		</div>
+
+		            		<div class="col-lg-12" >
+		            			<p style="border-bottom:1px solid gray; font-size:16px;"><span>Activation/Desactivation du produit</span>
+	            				</p>
+	            				<row>
+				              		<div class=" form-group col-lg-12">
+				              			<span> Produit actif
+				              			<label ><input type="radio" ng-model="selectedModel.isActivated" ng-value="true" name="isActivated" >Oui
+					              			</label>
+					              			<label><input type="radio" ng-model="selectedModel.isActivated" ng-value="false" name="isActivated">Non
+					              			</label>
+				              			</span>
+				             		</div>
+				             	</row>
+		            		</div>
+
+		            		<div class="col-lg-12">
+		            			<p style="border-bottom:1px solid gray; font-size:16px;"><span>Marque du produit</span>
+	            				</p>
+	            				<div class="row">
+			            			<div class="form-group col-lg-12" >
+			              				<span class="control-label col-lg-2" for="marque">marque du produit <sup>*</sup></span>
+			              				
+			              				<div class="col-lg-10">
+	  										<select class="form-control" name="marque" id="marque" ng-model="selectedModel.marque" ng-options="item.name for item in marques">
+	  										<option value="">choisir une marque</option>
+	  										</select>
+			             			 	</div>
+			             			</div>
+			             		</div>
+	            			</div>
+
+	            			<div class="col-lg-12" style="margin-bottom: 20px;">
+		            			<p style="border-bottom:1px solid gray; font-size:16px;"><span>Vendeur du produit</span>
+	            				</p>
+	            				<div class="row">
+			            			<div class="col-lg-3"> 
+			            				<span class="control-label " for="vendeur">Vendeur du produit <sup>*</sup></span>
+			            			</div>
+			            			<div class="col-lg-9">
+  										<select class="form-control" name="vendeur" id="vendeur" ng-model="selectedModel.boutique" ng-options="item.name for item in vendeurs"  required>
+  											<option value="">choisir un vendeur</option>
+  										</select>
+  										<div class="error" ng-show="myForm.vendeur.$invalid && myForm.category.$dirty">
+			                  				<span ng-show="myForm.vendeur.$error.required">
+			                    					Entrer une valeur
+			                  				</span>
+		                				</div>
+		             			 	</div>
+			             		</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>detail du model</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterDetail2()">Ajouter un detail</button></span>
+	            				</p>
+	            				<div class="row" ng-show="!details.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucun detail ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	        
+	                            <div class="row" ng-repeat="detail in selectedModel.detail">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomDetail"  ng-model="detail.name" class="form-control no-radius" id="nomDetail" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm1.nomDetail.$invalid
+			                					  && myForm1.nomDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.nomDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurDetail"  ng-model="detail.value" class="form-control no-radius" id="valeurDetail" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm1.valeurDetail.$invalid && myForm1.valeurDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.valeurDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerDetail2($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>caracteristiques du produit</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterCar1()">Ajouter une carateristique</button></span></p>
+	            				<div class="row" ng-show="!selectedModel.productCar.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucune caracteristique ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+
+	                            <div class="row" ng-repeat="car in selectedModel.productCar">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomCatP"  ng-model="car.name" class="form-control no-radius" id="nomCatP" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm1.nomCatP.$invalid && myForm1.nomCatP.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.nomCatP.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="scat">Unite</span>
+			              				<div class="col-lg-8">
+												<div class="col-lg-12">
+			                					<input type="input" name="unite"  ng-model="car.unity" class="form-control no-radius" id="unite" placeholder="Unite" >
+			             			 		</div>
+			             			 	</div>
+			             			</div>
+
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurP"  ng-model="car.value" class="form-control no-radius" id="valeurP" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm1.valeurP.$invalid && myForm1.valeurP.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.valeurP.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerCar1($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>caracteristiques du model</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterCar2()">Ajouter une carateristique</button></span></p>
+	            				<div class="row" ng-show="!selectedModel.modelCar.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucune caracteristique ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="car in selectedModel.modelCar">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomCatM"  ng-model="car.name" class="form-control no-radius" id="nomCatM" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm1.nomCatM.$invalid && myForm1.nomCatM.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.nomCatM.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="scat">Unite</span>
+			              				<div class="col-lg-8">
+												<div class="col-lg-12">
+			                					<input type="input" name="unite"  ng-model="car.unity" class="form-control no-radius" id="unite" placeholder="Unite" >
+			             			 		</div>
+			             			 	</div>
+			             			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurM"  ng-model="car.value" class="form-control no-radius" id="valeur" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm1.valeurM.$invalid && myForm1.valeurM.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm1.valeurM.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerCar2($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div> 
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Quantite, popularite, poids, taille et description</span><span class="pull-right">
+	            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Quantite*:</span>
+			              				<div class="col-lg-8">
+			                				<input type="number" name="quantity"  ng-model="selectedModel.quantity" class="form-control no-radius" id="quantity" placeholder="" required> 
+			                				<div class="error" ng-show="myForm1.quantity.$invalid && myForm1.quantity.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm1.quantity.$error.required">
+			                    					quantite en stock requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              			<span class="control-label col-lg-4" for="nom">Taille:</span>
+			              			<div class="col-lg-8">
+			                				<input type="input" name="taille"  ng-model="selectedModel.taille" class="form-control no-radius" id="taille" placeholder="">
+			             			</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Poids*:</span>
+			              				<div class="col-lg-8">
+			                				<!-- <input type="input" name="weight"  ng-model="selectedModel.weight" class="form-control no-radius" id="weight" placeholder="" required> -->
+			                				<select class="form-control" name="weight" id="weight" ng-model="selectedModel.weight"  required>
+			                					<option value="">choisir le poids</option>
+  												<option value="1">SMALL</option>
+  												<option value="2">MEDIUM</option>
+  												<option value="3">BIG</option>
+  											</select>
+			                				<div class="error" ng-show="myForm1.weight.$invalid && myForm1.weight.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm1.weight.$error.required">
+			                    					poids requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div>
+
+		            			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Popularite*:</span>
+			              				<div class="col-lg-8">
+			                				<input type="number" name="popularity"  ng-model="selectedModel.popularity" class="form-control no-radius" id="popularity" placeholder="" required>
+			                				<div class="error" ng-show="myForm1.popularity.$invalid && myForm1.popularity.$dirty">
+			                  					<span  style="color:red; font-style:italic"ng-show="myForm1.popularity.$error.required">
+			                    					popularite requise
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            			</div> 
+		            			<div class="col-lg-12 form-group">
+	            					<div class="col-lg-12">
+                                		<div >
+  											<label for="description">description (html text):</label>
+  											<textarea class="form-control" name="description" rows="5" id="description" ng-model="selectedModel.description" ng-required="true">
+  											</textarea>
+  											<div class="error" ng-show="myForm1.description.$invalid && myForm1.description.$dirty">
+			                  					<span style="color:red; font-style:italic" ng-show="myForm1.description.$error.required">
+			                    					description requise
+			                  					</span>
+			                				</div>
+										</div> 
+									</div>
+	            				</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Images  du model</span>
+	            				</p>
+	            				<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-3" for="password">Photo du model:</span>{{selectedImage.idImage}}
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendUpdateImage1(photo)" ng-model="photo" name="file1"    
+	             								accept="image/*" ngf-max-size="2MB"
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm1.file1.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm1.file1.$valid && !isUploading" ngf-thumbnail="photo" class="thumb"> 
+	          							<button type="button" ng-click="photo = null" ng-show="photo && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 1:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendUpdateImage2(bigPhoto1)" ng-model="bigPhoto1" name="file2"    
+	             								accept="image/*" ngf-max-size="2MB"
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm1.file2.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm1.file2.$valid && !isUploading" ngf-thumbnail="bigPhoto1" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto1 = null" ng-show="bigPhoto1 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 2:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendUpdateImage3(bigPhoto2)" ng-model="bigPhoto2" name="file3"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm1.file3.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm1.file3.$valid && !isUploading" ngf-thumbnail="bigPhoto2" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto2 = null" ng-show="bigPhoto2 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 3:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendUpdateImage4(bigPhoto3)" ng-model="bigPhoto3" name="file4"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm1.file4.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm1.file4.$valid && !isUploading" ngf-thumbnail="bigPhoto3" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto3 = null" ng-show="bigPhoto3 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+
+	                			<div class="form-group col-lg-4">
+		              				<span class="control-label col-lg-4" for="password"> Large photo du model 4:</span>
+		                			<div class="col-lg-8">
+		                  				<input type="file" ngf-select="sendUpdateImage5(bigPhoto4)" ng-model="bigPhoto4" name="file5"    
+	             								accept="image/*" ngf-max-size="2MB" 
+	             								ngf-model-invalid="errorFile" > 
+	      								<i ng-show="myForm1.file5.$error.maxSize">File too large 
+	          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+	          							</i>
+	          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+	          							<img ng-show="myForm1.file5.$valid && !isUploading" ngf-thumbnail="bigPhoto4" class="thumb"> 
+	          							<button type="button" ng-click="bigPhoto4 = null" ng-show="bigPhoto4 && !isUploading">Retirer</button>
+		                			</div>
+	                			</div>
+	            			</div>  
+
+	            			<div class="col-lg-12 ">
+	            				<p  style="border-bottom:1px solid gray; font-size:16px;"><span>vente en detail </span>
+	            				</p>
+	            				<div>
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Prix:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="prixDetail"  ng-model="selectedModel.retailSale.price" class="form-control no-radius" id="prixDetail" placeholder="" ng-required="true">
+			                				<div class="error" 
+			                				ng-show="myForm1.prixDetail.$invalid && 
+			                					myForm1.prixDetail.$dirty">
+			                  					<span style="color:red; font-style:italic"ng-show="myForm.prixDetail.$error.required">
+			                    					prix requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Prix promotionel:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="prixPromoDetail"  ng-model="selectedModel.retailSale.promotionalPrice" class="form-control no-radius" id="categorie" placeholder="" ng-required="true">
+			                				<div class="error" ng-show="myForm1.prixPromoDetail.$invalid && myForm1.prixPromoDetail.$dirty">
+			                  					<span style="color:red; font-style:italic;" ng-show="myForm1.prixPromoDetail.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            			
+		            				<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Produit en promotion
+				              					<label ><input type="radio" ng-model="selectedModel.retailSale.isInPromotion" ng-value="true" name="isDetailInPromotion" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="selectedModel.retailSale.isInPromotion" ng-value="false" name="isDetailInPromotion">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Produit activé
+				              					<label ><input type="radio" ng-model="isActivated.value" ng-value="true" name="isActivated" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="isActivated.value" ng-value="false" name="isActivated">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Produit virtuel
+				              					<label ><input type="radio" ng-model="isVirtual.value" ng-value="true" name="isVirtual" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="isVirtual.value" ng-value="false" name="isVirtual">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>
+
+
+		            				<div class="form-group col-lg-6">
+            							<span class="control-label col-lg-3" for="sexe">Date de fin de promo<sup>*</sup>
+            							</span>
+            							<div class="col-lg-8">
+              								<input type="input" name="dateFinDetailPromo" ng-model="selectedModel.retailSale.endPromotionDate" ng-pattern="matchPatternLogin"  class="form-control no-radius"  placeholder="date fin promo" required>
+              								<div><span style="font-style:italic">format:AAAA-MM-JJ</span></div>
+              								<div class="error" ng-show="myForm1.dateFinDetailPromo.$invalid && myForm1.dateFinDetailPromo.$dirty">
+	                							<span style="color:red; font-style:italic" ng-show="myForm1.dateFinDetailPromo.$error.required">
+	                 								 Entrer une valeur
+	                							</span>
+								                <span style="color:red; font-style:italic" ng-show="myForm1.dateFinDetailPromo.$error.pattern">
+								                   Entrer une date valide
+								                </span>
+              								</div>
+          								</div> 
+	            					</div>
+	            				</div>
+	            			</div>
+  
+	            			<div class="col-lg-12">
+	            				<p  style="border-bottom:1px solid gray; font-size:16px;"><span>vente en BuyWithMe</span><span class="pull-right"><label ><input type="radio" ng-model="venteEnBuyWithMe" ng-value="true" name="venteEnBuyWithMe" >Oui</label><label><input type="radio" ng-model="venteEnBuyWithMe" ng-value="false" name="venteEnBuyWithMe">Non</label></span>
+	            				</p>
+	            				<div ng-if="venteEnBuyWithMe">
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="nom">Prix:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="prixBuyWith"  ng-model="selectedModel.BWMSale.price" class="form-control no-radius" id="venteEnBuyWithMe" placeholder=""  required>
+			                				<div class="error" 
+			                				ng-show="myForm1.prixBuyWith.$invalid && 
+			                					myForm1.prixBuyWith.$dirty">
+			                  					<span style="color:red;" ng-show="myForm1.prixBuyWith.$error.required">
+			                    					prix requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-3" for="nom">Taille du lot:</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="tailleLot"  ng-model="selectedModel.BWMSale.lotQuantity" class="form-control no-radius" id="quantiteParLot" placeholder="" required>
+			                				<div class="error" ng-show="myForm1.tailleLot.$invalid && myForm1.tailleLot.$dirty">
+			                  					<span style="color:red;" ng-show="myForm1.tailleLot.$error.required">
+			                    					Prix promotionel requis
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+
+		            				<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-3" for="nom">nombre de jours minimal:
+			              				</span>
+			              				<div class="col-lg-6">
+			                				<input type="number" name="duree"  ng-model="selectedModel.BWMSale.duree" class="form-control no-radius" id="duree" placeholder="" required>
+			                				<div class="error" ng-show="myForm1.duree.$invalid && myForm1.duree.$dirty">
+			                  					<span style="color:red;" ng-show="myForm1.duree.$error.required">
+			                    					Duree requise
+			                  					</span>
+			                				</div>
+			             			 	</div>
+		            				</div>
+		            			
+	            					<div class="form-group col-lg-6" >
+			              				<div class="col-lg-12">
+			              					<span> Lot personnalizable :
+				              					<label ><input type="radio"  ng-value="true" name="venteEnGros" >Oui
+				              					</label>
+				              					<label><input type="radio" ng-model="selectedModel.BWMSale.ispersonnalizable" ng-value="false" name="venteEnGros2">Non
+				              					</label>
+			              					</span>
+			             			 	</div>
+		            				</div>	
+	            				</div>
+	            			</div>
+
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm1.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer le produit</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	
+
+</div>

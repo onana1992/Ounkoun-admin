@@ -1,0 +1,698 @@
+<div class="admin container-fluid" ng-controller="AdminEnchereCtrl" >
+
+	<div style="text-align:center;margin-top:0px;background-color:rgba(0,0,0,0.6);height:50px;color:white;margin-bottom:10px;">
+		<h3 style="padding-top:10px;">Tableau de bord d'administration de Ounkoun</h3>
+	</div>
+
+	<div class="col-lg-2 nav-gauche" style="height:500px;width:200px;color:white;">
+
+        <ul class="vertical-menu" style="color:white; margin-top:30px;">
+
+			<li>
+				<a href="#!/admin/marques">GESTIONS DES MARQUES 
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/categories">GESTIONS DES CATEGORIES
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/produits">GESTIONS DES PRODUITS
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/utilisateurs">GESTION DES UTILISATEURS </a>
+			</li>
+			
+			<li>
+		        <a href="#!/admin/boutique">GESTION DES BOUTIQUES
+		        </a>
+      		</li>
+
+		    <li>
+				<a href="#!/admin/commandes">GESTION DES COMMANDES
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/notifications">GESTION DES NOTIFICATIONS
+				</a>
+			</li>
+
+        </ul> 
+    </div> 
+    <div id="" class="col-lg-8" style="padding-right:0px;margin-top:20px; margin-" >
+    	<h4 style="border-bottom:1px solid gray;padding-bottom:10px;"> gestion des encheres</h4>
+    	
+        <p style="text-align:center;"><button  data-toggle="modal" href="#createEnchere"  style="color:orange;border-color:;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">creer une nouvelle enchere</button>
+
+        	<button  data-toggle="modal" href="#initEnchere"  style="color:orange;border-color:;font-weight:bold;margin-right: 10px;" type="button" class="btn btn-default btn-sm no-radius">Reitialiser les enchère closes
+        	</button>
+        </p>
+        
+        <div style="margin-left:50px;">
+           
+	        <table datatable="ng" id="mytable" class="row-border hover">
+			    <thead>
+				    <tr>
+				        <th style="text-align:center;">Num</th>
+				        <th style="text-align:center;">Nom de l'article</th>
+				        <th style="text-align:center;">Statut </th>
+				        <th style="text-align:center;">Image </th>
+				        <th style="text-align:center;">Actions</th>
+				    </tr>
+			    </thead>
+			    <tbody>
+			    	<tr ng-repeat="enchere in  encheres">
+				        <!-- <td style="text-align:center;">{{$index +1}}</td> -->
+				        <td style="text-align:center;"> {{enchere.numEnchere}} </td>
+				        <td style="text-align:center;"> {{enchere.name}}</td>
+				        <td style="text-align:center;"> {{enchere.statut}} <!-- <img ng-src="{{baseUrl}}image/{{model.idImage}}"   height="40" width="40"> --> 
+				        </td>
+				        <td style="text-align:center;"> <img ng-src="{{baseUrl}}image/{{enchere.idImage}}"   height="40" width="40"> 
+				        </td>
+				        <td style="text-align:center;">
+
+				        	<button style="margin-bottom:5px; color:orange;font-weight:bold;" ng-click="selectEnchere(enchere)" data-toggle="modal" href="#modifiedEnchere"  style="" type="button" class="btn btn-default btn-sm no-radius">Modifier
+				        	</button>
+
+				        	<button ng-click="selectEnchere(enchere)" data-toggle="modal" href="#deleteEnchere"  style="margin-bottom:5px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer
+				        	</button>
+
+				        	<button ng-click="selectEnchere(enchere)" data-toggle="modal" href="#cloturerEnchere"  style="margin-bottom:5px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Cloturer
+				        	</button>
+
+				        </td> 
+				    </tr>  
+			    </tbody>
+			</table>
+	</div>
+
+	</div>
+
+	
+	<div class="modal fade" id="createEnchere" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Creer une nouvelle enchere</h4>
+      			</div>
+      			<div class="modal-body">
+
+        			<!-- <div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div> -->
+        		    <!-- <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un model portant ce nom existe deja</p>
+        			</div> --> 
+
+        			
+
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm"  ng-submit="createEnchere()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+
+	          				<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-2 " for="cat"> Numero de l'enchere:<sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-10">
+  										<input type="text" class="form-control" name="numero" id="numero" ng-model="numero" placeholder="Entrer le numero de l'enchere"   required>
+  										
+  										<div class="error" ng-show="myForm.numero.$invalid && myForm.numero.$dirty">
+			                  				<span style="color:red;" ng-show="myForm.numero.$error.required">
+			                    					valeur requise
+			                  				</span>
+		                				</div>
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-2 " for="cat"> Nom de l'aticle:<sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-10">
+  										<input type="text" class="form-control" name="name" id="name" ng-model="name" placeholder="Entrer le nom de l'enchere"   	required>
+  										
+  										<div class="error" ng-show="myForm.name.$invalid && myForm.name.$dirty">
+			                  				<span style="color:red;" ng-show="myForm.name.$error.required">
+			                    					valeur requise
+			                  				</span>
+		                				</div>
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="form-group col-lg-12">
+			              		<span class="control-label col-lg-2" for="nom">categorie de l'article*:</span>
+			              		<div class="col-lg-10">
+			                		<select class="form-control" name="etat" id="etat" ng-model="category.value" >
+			                			<option value="">choisir la categorie</option>
+  										<option value="Vêtements Femmes"> VETEMENTS FEMMES </option>
+  										<option value="Vêtements hommes">VETEMENTS HOMMES</option>
+  										<option value="Chaussures femmes ">CHAUSSURES FEMMES</option>
+  										<option value="Chaussures hommes">CHAUSSURES HOMMES</option>
+  										<option value="Sacs">SACS</option>
+  									</select>
+			             		</div>
+		            		</div>
+
+	            			<div class="form-group col-lg-12">
+			              		<span class="control-label col-lg-2" for="nom">Etat de l'article*:</span>
+			              		<div class="col-lg-10">
+			                		<select class="form-control" name="etat" id="etat" ng-model="etat.value"  required>
+			                			<option value="">choisir l'etat de l'article</option>
+  										<option value="neuf">NEUF</option>
+  										<option value="occasion USA">OCCASION USA</option>
+  										<option value="occasion Europe">OCCASION EUROPE</option>
+  										<option value="friperie">FRIPERIE</option>
+  									</select>
+			                		<div class="error" ng-show="myForm.etat.$invalid && myForm.etat.$dirty">
+			                  			<span  style="color:red; font-style:italic"ng-show="myForm.etat.$error.required">
+			                    			valeur requise
+			                  			</span>
+			                		</div>
+			             		</div>
+		            		</div>
+
+		            		
+	            			<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group ">
+				              		<span class="control-label col-lg-2" for="prix"> Mise à prix:</span>
+				              		<div class="col-lg-10">
+				                		<input type="number" name="prix"  ng-model="prix" class="form-control no-radius" id="prix" placeholder="" ng-required="true">
+				                		<div class="error" 
+				                			ng-show="myForm.prix.$invalid && 
+				                				myForm.prix.$dirty">
+				                  				<span style="color:red; font-style:italic"ng-show="myForm.prix.$error.required">
+				                    					Entrer une valeur
+				                  				</span>
+				                		</div>
+				             		</div>
+			            		</div>
+			            	</div>
+
+			            	<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group ">
+				              		<span class="control-label col-lg-2" for="quantity"> quantité:</span>
+				              		<div class="col-lg-10">
+				                		<input type="number" name="quantity"  ng-model="quantity" class="form-control no-radius" id="prix" placeholder="" ng-required="true">
+				                		<div class="error" 
+				                			ng-show="myForm.quantity.$invalid && 
+				                				myForm.quantity.$dirty">
+				                  				<span style="color:red; font-style:italic"ng-show="myForm.quantity.$error.required">
+				                    					Entrer une valeur
+				                  				</span>
+				                		</div>
+				             		</div>
+			            		</div>
+			            	</div>
+
+			            	<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group ">
+				              		<span class="control-label col-lg-2" for="time"> durée:</span>
+				              		<div class="col-lg-10">
+				                		<input type="number" name="time"  ng-model="time" class="form-control no-radius" id="time" placeholder="" ng-required="true">
+				                		<div class="error" 
+				                			ng-show="myForm.time.$invalid && 
+				                				myFormtime.$dirty">
+				                  				<span style="color:red; font-style:italic"ng-show="myForm.time.$error.required">
+				                    					Entrer une valeur
+				                  				</span>
+				                		</div>
+				             		</div>
+			            		</div>
+			            	</div>
+
+
+
+	            			<div class="col-lg-12 form-group">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Description de l'article</span></p>
+	            					<div class="col-lg-12">
+                                		<div >
+  											<label for="description">description (html text):</label>
+  											<textarea class="form-control" name="description" rows="5" id="description" ng-model="description" ng-required="true">
+  											</textarea>
+  											<div class="error" ng-show="myForm.description.$invalid && myForm.description.$dirty">
+			                  					<span ng-show="myForm.description.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+										</div> 
+									</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>detail de l'article</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterDetail()">Ajouter un detail</button></span>
+	            				</p>
+	            				<div class="row" ng-show="!details.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucun detail ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="detail in details">
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomDetail"  ng-model="detail.name" class="form-control no-radius" id="nomDetail" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm.nomDetail.$invalid
+			                					  && myForm.nomDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.nomDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurDetail"  ng-model="detail.value" class="form-control no-radius" id="valeurDetail" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm.valeurDetail.$invalid && myForm.valeurDetail.$dirty">
+			                  						<span style="color:red; font-style:italic" ng-show="myForm.valeurDetail.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerDetail($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Images  de l'article</span>
+	            				</p>
+	            				<div class="row">
+	            					<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-3" for="password">Photo du model:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendImage1(photo)" ng-model="photo" name="file1"    
+		             								accept="image/*" ngf-max-size="2MB" required
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm.file1.$error.required">*required</i><br>
+		      								<i ng-show="myForm.file1.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm.file1.$valid && !isUploading" ngf-thumbnail="photo" class="thumb"> 
+		          							<button type="button" ng-click="photo = null" ng-show="photo && !isUploading">Retirer</button>
+			                			</div>
+	                				</div>
+
+	                				<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 1:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendImage2(bigPhoto1)" ng-model="bigPhoto1" name="file2"    
+		             								accept="image/*" ngf-max-size="2MB" required
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm.file2.$error.required">*required</i><br>
+		      								<i ng-show="myForm.file2.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm.file2.$valid && !isUploading" ngf-thumbnail="bigPhoto1" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto1 = null" ng-show="bigPhoto1 && !isUploading">Retirer</button>
+			                			</div>
+	                				</div>
+
+		                			<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 2:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendImage3(bigPhoto2)" ng-model="bigPhoto2" name="file3"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm.file3.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm.file3.$valid && !isUploading" ngf-thumbnail="bigPhoto2" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto2 = null" ng-show="bigPhoto2 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+
+		                			<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 3:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendImage4(bigPhoto3)" ng-model="bigPhoto3" name="file4"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm.file4.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm.file4.$valid && !isUploading" ngf-thumbnail="bigPhoto3" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto3 = null" ng-show="bigPhoto3 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+
+		                			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 4:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendImage4(bigPhoto4)" ng-model="bigPhoto4" name="file5"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm.file5.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm.file5.$valid && !isUploading" ngf-thumbnail="bigPhoto4" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto4 = null" ng-show="bigPhoto4 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+	            				</div>
+	            			</div>   
+
+	            		 
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer l'enchere</button>
+	                    		</div>
+	                		</div>
+
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+
+
+  	<div class="modal fade" id="modifiedEnchere" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Modifier cette enchere</h4>
+      			</div>
+      			<div class="modal-body">
+
+        			<!-- <div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div> -->
+        		    <!-- <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un model portant ce nom existe deja</p>
+        			</div> --> 
+
+        			
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm1"  ng-submit="modifiedEnchere()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+	            			<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-2 " for="cat"> Nom de l'article:<sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-10">
+
+  										<input type="text" class="form-control" name="name" id="name" ng-model="selectedEnchere.name" placeholder="Entrer le nom de l'enchere" >
+  										
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="form-group col-lg-12">
+			              		<span class="control-label col-lg-2" for="nom">Etat de l'article*:</span>
+			              		<div class="col-lg-10">
+			                		<select class="form-control" name="etat" id="etat" ng-model="selectedEnchere.etat" >
+			                			<option value="">choisir l'etat de l'article</option>
+  										<option value="neuf">NEUF</option>
+  										<option value="occasion USA">OCCASION USA</option>
+  										<option value="occasion Europe">OCCASION EUROPE</option>
+  										<option value="friperie">FRIPERIE</option>
+  									</select>
+			             		</div>
+		            		</div>
+
+		            		
+
+	            			<div class="col-lg-12 " style="margin-bottom:10px;">
+		            			<div class="form-group ">
+				              		<span class="control-label col-lg-2" for="prix"> Mise à prix:</span>
+				              		<div class="col-lg-10">
+				                		<input type="number" name="prix"  ng-model="selectedEnchere.initPrice" class="form-control no-radius" id="prix" placeholder="" >
+				             		</div>
+			            		</div>
+			            	</div>
+
+	            			<div class="col-lg-12 form-group">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Description de l'article</span></p>
+	            					<div class="col-lg-12">
+                                		<div >
+  											<label for="description">description (html text):</label>
+  											<textarea class="form-control" name="description" rows="5" id="description" ng-model="selectedEnchere.description" >
+  											</textarea>
+										</div> 
+									</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>detail de l'article</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterDetail1()">Ajouter un detail</button></span>
+	            				</p>
+	            				<div class="row" ng-show="!selectedEnchere.detail.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucun detail ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="detail in selectedEnchere.detail">
+
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom*</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomDetail"  ng-model="detail.name" class="form-control no-radius" id="nomDetail" placeholder="nom" >
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur*</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeurDetail"       ng-model="detail.value" class="form-control no-radius" id="valeurDetail" placeholder="valeur" >
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerDetail1::($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Images  de l'article</span>
+	            				</p>
+	            				<div class="row">
+	            					<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-3" for="password">Photo du model:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendUpdateImage1(photo)" ng-model="photo" name="file1"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm1.file1.$error.required">*required</i><br>
+		      								<i ng-show="myForm1.file1.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm1.file1.$valid && !isUploading" ngf-thumbnail="photo" class="thumb"> 
+		          							<button type="button" ng-click="photo = null" ng-show="photo && !isUploading">Retirer</button>
+			                			</div>
+	                				</div>
+
+	                				<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 1:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendUpdateImage2(bigPhoto1)" ng-model="bigPhoto1" name="file2"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm1.file2.$error.required">*required</i><br>
+		      								<i ng-show="myForm1.file2.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm1.file2.$valid && !isUploading" ngf-thumbnail="bigPhoto1" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto1 = null" ng-show="bigPhoto1 && !isUploading">Retirer</button>
+			                			</div>
+	                				</div>
+
+		                			<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 2:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendUpdateImage3(bigPhoto2)" ng-model="bigPhoto2" name="file3"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm1.file3.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm1.file3.$valid && !isUploading" ngf-thumbnail="bigPhoto2" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto2 = null" ng-show="bigPhoto2 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+
+		                			<div class="form-group col-lg-6">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 3:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendUpdateImage4(bigPhoto3)" ng-model="bigPhoto3" name="file4"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm1.file4.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm1.file4.$valid && !isUploading" ngf-thumbnail="bigPhoto3" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto3 = null" ng-show="bigPhoto3 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+
+		                			<div class="form-group col-lg-4">
+			              				<span class="control-label col-lg-4" for="password"> Large photo du model 4:</span>
+			                			<div class="col-lg-8">
+			                  				<input type="file" ngf-select="sendUpdateImage5(bigPhoto4)" ng-model="bigPhoto4" name="file5"    
+		             								accept="image/*" ngf-max-size="2MB" 
+		             								ngf-model-invalid="errorFile" > 
+		      								<i ng-show="myForm1.file5.$error.maxSize">File too large 
+		          								{{errorFile.size / 1000000|number:1}}MB: max 2M
+		          							</i>
+		          							<i ng-show="isUploading" style="color:green;">upload de fichier, veillez patienter...</i>
+		          							<img ng-show="myForm1.file5.$valid && !isUploading" ngf-thumbnail="bigPhoto4" class="thumb"> 
+		          							<button type="button" ng-click="bigPhoto4 = null" ng-show="bigPhoto4 && !isUploading">Retirer</button>
+			                			</div>
+		                			</div>
+	            				</div>
+	            			</div>    
+
+	            		 
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm1.$invalid"  class="btn btn-warning no-radius">Enregistrer l'enchère</button>
+	                    		</div>
+	                		</div>
+
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	
+
+  	<div class="modal fade" id="deleteEnchere" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Supprimer cette enchere</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Suppression de l'enchère,veuillez patienter...</p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoading">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment supprimer l'enchère {{$scope.selectedEnchere.numEnchere}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmSupprimerEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer
+	          				</button> 
+
+	          				<button ng-click="annulerSupprimerEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="cloturerEnchere" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Cloturer cette enchere</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Cloture,veuillez patienter...</p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoading">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment cloturer l'enchère {{$scope.selectedEnchere.numEnchere}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmCloturerEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Cloturer
+	          				</button> 
+
+	          				<button ng-click="annulerCloturerEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="initEnchere" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Reinitialiser toutes encheres</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoadingInit">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Reinitialisation des enchères closes,veuillez patienter...</p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoadingInit">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment reinitialiser  les enchere {{$scope.selectedEnchere.numEnchere}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmReinitEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Reinitialiser
+	          				</button> 
+
+	          				<button ng-click="annulerReinitEnchere()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+
+
+  	
+
+</div>

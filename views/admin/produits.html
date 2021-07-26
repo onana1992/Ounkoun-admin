@@ -1,0 +1,450 @@
+<div class="admin container-fluid" ng-controller="AdminProduitCtrl" >
+
+	<div style="text-align:center;margin-top:0px;background-color:rgba(0,0,0,0.6);height:50px;color:white;margin-bottom:10px;">
+		<h3 style="padding-top:10px;">Tableau de bord d'administration de Ounkoun</h3>
+	</div>
+
+	 <div class="col-lg-2 nav-gauche" style="height:500px;width:200px;color:white;">
+        <ul class="vertical-menu" style="color:white; margin-top:30px;">
+		   
+			<li>
+				<a href="#!/admin/marques">GESTIONS DES MARQUES 
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/categories">GESTIONS DES CATEGORIES
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/produits">GESTIONS DES PRODUITS
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/utilisateurs">GESTION DES UTILISATEURS </a>
+			</li>
+			
+		    <li>
+				<a href="#!/admin/commandes">GESTION DES COMMANDES
+				</a>
+			</li>
+
+			<li>
+		        <a href="#!/admin/boutique">GESTION DES BOUTIQUES
+		        </a>
+      		</li>
+
+			<li>
+				<a href="#!/admin/notifications">GESTION DES NOTIFICATIONS
+				</a>
+			</li>
+
+			<li>
+				<a href="#!/admin/bannieres">GESTION DES BANNIERES
+				</a>
+			</li>
+			
+        </ul> 
+    </div> 
+    <div id="" class="col-lg-8" style="padding-right:0px;margin-top:20px; margin-" >
+    	<h4 style="border-bottom:1px solid gray;padding-bottom:10px;"> gestion des produits</h4>
+        <p style="text-align:center;"><button  data-toggle="modal" href="#createProduit"  style="color:orange;border-color:;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">creer une  nouveau produit</button>
+        </p>
+        <div style="margin-left:50px;">
+	        <table datatable="ng" id="mytable" class="row-border hover">
+			    <thead>
+				    <tr>
+				        <th style="text-align:center;">ID</th>
+				        <th style="text-align:center;">Nom </th>
+				        <th style="text-align:center;">Categorie</th>
+				        <th style="text-align:center;">Actions</th>
+				    </tr>
+			    </thead>
+			    <tbody>
+			    	 <tr ng-repeat="produit in  produits">
+				        <td style="text-align:center;">{{$index +1}}</td>
+				        <td style="text-align:center;"> {{produit.name}} </td>
+				        <td style="text-align:center;"> {{produit.idCategory}} </td>
+				        <td style="text-align:center;"><button ng-click="selectProduct(produit)" data-toggle="modal" href="#modifyProduct"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Modifier</button> 
+				        <button ng-click="selectProduct(produit)" data-toggle="modal" href="#deleteProduit"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button>
+				         <a href="#!/admin/produits/{{encode(produit.name)}}" style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Voir les models du produit</a>
+				        </td>
+				     </tr>    
+			    </tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="createProduit" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Creer  un nouveau produit</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        		    <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un produit portant ce nom existe deja</p>
+        			</div> 
+        			<div class="content" ng-show="!isLoading">    
+	       			<form  name="myForm"  ng-submit="createProduit()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+	            			<div class="col-lg-12">
+		            			<div class="form-group" >
+		              				<span class="control-label col-lg-1" for="nom">Nom du produit <sup>*</sup></span>
+		              				<div class="col-lg-10">
+		                			<input type="input" name="nom"  ng-model="nom" class="form-control no-radius" id="nom" placeholder="Entrez le nom du produit" required>
+		                			<div class="error" ng-show="myForm.nom.$invalid && myForm.nom.$dirty">
+		                  				<span ng-show="myForm.nom.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                			</div>
+		             			 	</div>
+		             			</div>
+	            			</div>
+	            			<div class="col-lg-6">
+		            			<div class="form-group" >
+		              				<span class="control-label col-lg-4" for="marque">marque du produit <sup>*</sup></span>
+		              				<div class="col-lg-8">
+  										<select class="form-control" name="marque" id="marque" ng-model="selectedMarque" ng-options="item.name for item in marques" required>
+  										<option value="">choisir une marque</option>
+  										</select>
+  										<div class="error" ng-show="myForm.marque.$invalid && myForm.marque.$dirty">
+		                  				<span ng-show="myForm.marque.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                				</div>
+		             			 	</div>
+		             			</div>
+	            			</div>
+
+
+                            <div class="col-lg-6">
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-4 " for="cat">Categorie <sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-8">
+  										<select class="form-control" name="category" id="cat" ng-model="selectedCategory" ng-options="item.name for item in categories" ng-change="changeCat()" required>
+  										<option value="">choisir une categorie</option>
+  										</select>
+  										<div class="error" ng-show="myForm.category.$invalid && myForm.category.$dirty">
+		                  				<span ng-show="myForm.category.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                				</div>
+		             			 	</div>
+		             			
+		            			</div>
+		            		</div>
+		            		<div class="col-lg-6">
+		            			<div class="form-group" ng-if="selectedCategory!=null &&    selectedCategory.category.length!==0" >
+		              				<span class="control-label col-lg-4" for="scat">sous Categorie<sup>*</sup></span>
+		              				<div class="col-lg-8">
+		                				<select class="form-control" name="scategory" id="scat" ng-model="selectedSCategory.value" ng-options="item1.name for item1 in selectedCategory.category" ng-change="changeSCat()" required>
+    										<option value="">choisir une sous categorie</option>
+  										</select>
+  										<div class="error" ng-show="myForm.scategory.$invalid && myForm.scategory.$dirty">
+		                  				<span ng-show="myForm.scategory.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                				</div>
+		             			 	</div>
+		            			</div>
+		            		</div>
+		            		<div class="col-lg-6">
+		            			<div class="form-group" ng-if="selectedSCategory.value.id!=null &&
+		            			selectedSCategory.value.category.length!=0" >
+		              				<span class="control-label col-lg-4" for="nom">s-sous Categorie<sup>*</sup></span>
+		              				<div class="col-lg-8">
+		                				<select class="form-control" id="cat" name="sscategory" ng-model="selectedSSCategory.value" ng-options="item2.name for item2 in selectedSCategory.value.category" required>
+    										<option value="">choisir une sous sous categorie</option>
+  										</select>
+  										<div class="error" ng-show="myForm.sscategory.$invalid && myForm.sscategory.$dirty">
+		                  				<span ng-show="myForm.sscategory.$error.required">
+		                    					Entrer une valeur
+		                  				</span>
+		                				</div>
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>caracteristiques du produit</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterCar()">Ajouter une carateristique</button></span></p>
+	            				<div class="row" ng-show="!caracteritiques.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucune caracteristique ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+
+	                            <div class="row" ng-repeat="car in caracteritiques">
+	                            
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomCat"  ng-model="car.name" class="form-control no-radius" id="nomCat" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm.nomCat.$invalid && myForm.nomCat.$dirty">
+			                  						<span ng-show="myForm.nomCat.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="scat">Unite</span>
+			              				<div class="col-lg-8">
+												<div class="col-lg-12">
+			                					<input type="input" name="unite"  ng-model="car.unity" class="form-control no-radius" id="unite" placeholder="Unite">
+			             			 		</div>
+			             			 	</div>
+			             			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeur"  ng-model="car.value" class="form-control no-radius" id="valeur" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm.valeur.$invalid && myForm.valeur.$dirty">
+			                  						<span ng-show="myForm.valeur.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerCar($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			<div class="col-lg-12 form-group">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Description du produit</span></p>
+	            					<div class="col-lg-12">
+                                		<div >
+  											<label for="description">description (html text):</label>
+  											<textarea class="form-control" name="description" rows="5" id="description" ng-model="description" ng-required="true">
+  											</textarea>
+  											<div class="error" ng-show="myForm.description.$invalid && myForm.description.$dirty">
+			                  					<span ng-show="myForm.description.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+										</div> 
+									</div>
+	            			</div>
+	            			
+	        
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer le produit</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="deleteProduit" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Supprimer une produit</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Suppression du produit,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoading">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment supprimer la categorie {{selectedProduct.name}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmSupprimerProduit()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button> 
+
+	          				<button ng-click="annulerSupprimerProduct()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="modifyProduct" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog" style="width:80%;">
+    		<div class="modal-content" style="min-height:500px; width:100%;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Modification du produit: eee{{selectedProduct.name}}</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        		    <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">un produit portant ce nom existe deja</p>
+        			</div> 
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm1"  ng-submit="modifyProduit()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+	            			<div class="col-lg-12">
+		            			<div class="form-group" >
+		              				<span class="control-label col-lg-1" for="nom">Nom du produit <sup>*</sup></span>
+		              				<div class="col-lg-10">
+		                			<input type="input" name="nom"  ng-model="selectedProduct.name" class="form-control no-radius" id="nom" placeholder="Entrez le nom du produit" required>
+		                			<div class="error" ng-show="myForm1.nom.$invalid && myForm1.nom.$dirty">
+		                  				<span ng-show="myForm1.nom.$error.required">
+		                    					Entrer une valeur
+		                  					</span>
+		                			</div>
+		             			 	</div>
+		             			</div>
+	            			</div>
+
+	            			<div class="col-lg-6">
+		            			<div class="form-group" >
+		              				<span class="control-label col-lg-4" for="marque">marque du produit <sup>*</sup></span>
+		              				<div class="col-lg-8">
+  										<select class="form-control" name="marque" id="marque" ng-model="selectedProduct.marque" ng-options="item.name for item in marques" >
+  										<option value="">choisir une marque</option>
+  										</select>
+  										
+		             			 	</div>
+		             			</div>
+	            			</div>
+
+                            <div class="col-lg-6">
+		            			<div class="form-group">
+		              				<span class="control-label col-lg-4 " for="cat">Categorie <sup>*</sup>
+		              				</span>
+		              				<div class="col-lg-8">
+  										<select class="form-control" name="category" id="cat" ng-model="selectedCategory" ng-options="item.name for item in categories" ng-change="changeCat()">
+  										<option value="">choisir une categorie</option>
+  										</select>
+		             			 	</div>
+		            			</div>
+		            		</div>
+
+		            		<div class="col-lg-6">
+		            			<div class="form-group" ng-if="selectedCategory!=null &&    selectedCategory.category.length!==0" >
+		              				<span class="control-label col-lg-4" for="scat">sous Categorie<sup>*</sup></span>
+		              				<div class="col-lg-8">
+		                				<select class="form-control" name="scategory" id="scat" ng-model="selectedSCategory.value" ng-options="item1.name for item1 in selectedCategory.category" ng-change="changeSCat()">
+    										<option value="">choisir une sous categorie</option>
+  										</select>
+		             			 	</div>
+		            			</div>
+		            		</div>
+		            		
+		            		<div class="col-lg-6">
+		            			<div class="form-group" ng-if="selectedSCategory.value.id!=null &&
+		            			selectedSCategory.value.category.length!=0" >
+		              				<span class="control-label col-lg-4" for="nom">s-sous Categorie<sup>*</sup></span>
+		              				<div class="col-lg-8">
+		                				<select class="form-control" id="cat" name="sscategory" ng-model="selectedSSCategory.value" ng-options="item2.name for item2 in selectedSCategory.value.category" >
+    										<option value="">choisir une sous sous categorie</option>
+  										</select>
+		             			 	</div>
+		            			</div>
+	            			</div>
+
+	            			<div class="col-lg-12 ">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>caracteristiques du produit</span><span class="pull-right"> <button style="position:relative; top:-10px;color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="ajouterCar1()">Ajouter une carateristique</button></span></p>
+	            				<div class="row" ng-show="!caracteritiques.length">
+	            					<p style="font-style:italic;" class="col-lg-12">
+	            						aucune caracteristique ajouter, veuillez ajouter ...
+	            					</p>
+	            				</div>
+	                            <div class="row" ng-repeat="car in selectedProduct.productCar">
+	                            
+		            				<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="cat">nom</span>
+			              				<div class="col-lg-8">
+											<div class="col-lg-12">
+			                					<input type="input" name="nomCat"  ng-model="car.name" class="form-control no-radius" id="nomCat" placeholder="nom" required>
+			                					<div class="error" ng-show="myForm1.nomCat.$invalid && myForm1.nomCat.$dirty">
+			                  						<span ng-show="myForm1.nomCat.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="scat">Unite</span>
+			              				<div class="col-lg-8">
+												<div class="col-lg-12">
+			                					<input type="input" name="unite"  ng-model="car.unity" class="form-control no-radius" id="unite" placeholder="Unite">
+			             			 		</div>
+			             			 	</div>
+			             			</div>
+			            			<div class="form-group col-lg-3">
+			              				<span class="control-label col-lg-2" for="nom">Valeur</span>
+			              				<div class="col-lg-8">
+			                				<div class="col-lg-12">
+			                					<input type="input" name="valeur"  ng-model="car.value" class="form-control no-radius" id="valeur" placeholder="valeur" required>
+			                					<div class="error" ng-show="myForm1.valeur.$invalid && myForm1.valeur.$dirty">
+			                  						<span ng-show="myForm1.valeur.$error.required">
+			                    						Entrer une valeur
+			                  						</span>
+			                					</div>
+			             			 		</div>
+			             			 	</div>
+			            			</div>
+			            			<div class="form-group col-lg-3">
+			            				<button style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius" type="button" ng-click="retirerCar1($index)">retirer
+			            				</button>
+			            			</div>
+	            				</div>
+	            			</div>
+
+	            			<div class="col-lg-12 form-group">
+	            				<p style="border-bottom:1px solid gray; font-size:16px;"><span>Description du produit</span></p>
+	            					<div class="col-lg-12">
+                                		<div >
+  											<label for="description">description (html text):</label>
+  											<textarea class="form-control" name="description" rows="5" id="description" ng-model="selectedProduct.description" ng-required="true">
+  											</textarea>
+  											<div class="error" ng-show="myForm1.description.$invalid && myForm1.description.$dirty">
+			                  					<span ng-show="myForm1.description.$error.required">
+			                    					Entrer une valeur
+			                  					</span>
+			                				</div>
+										</div> 
+									</div>
+	            			</div>
+	            			
+	        
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-4 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm1.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer le produit</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div> 
+
+</div>

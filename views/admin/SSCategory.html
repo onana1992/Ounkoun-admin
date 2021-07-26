@@ -1,0 +1,189 @@
+
+<div class="admin container-fluid" ng-controller="AdminSSCategoryCtrl" >
+
+	<div style="text-align:center;margin-top:0px;background-color:rgba(0,0,0,0.6);height:50px;color:white;margin-bottom:10px;">
+		<h3 style="padding-top:10px;">Tableau de bord d'administration de Ounkoun</h3>
+	</div>
+
+	 <div class="col-lg-2 nav-gauche" style="height:500px;width:200px;color:white;">
+        <ul class="vertical-menu" style="color:white; margin-top:30px;">
+		   
+			<li>
+				<a href="#!/admin/marques">GESTIONS DES MARQUES 
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/categories">GESTIONS DES CATEGORIES
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/produits">GESTIONS DES PRODUITS
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/utilisateurs">GESTION DES UTILISATEURS </a>
+			</li>
+		    <li>
+				<a href="#!/admin/commandes">GESTION DES COMMANDES
+				</a>
+			</li>	
+			<li>
+				<a href="#!/admin/notifications">GESTION DES NOTIFICATIONS
+				</a>
+			</li>
+			<li>
+				<a href="#!/admin/bannieres">GESTION DES BANNIERES
+				</a>
+			</li>
+        </ul> 
+    </div> 
+    <div id="" class="col-lg-8" style="padding-right:0px;margin-top:20px; margin-" >
+    	<h4 style="border-bottom:1px solid gray;padding-bottom:10px;"> gestion des categories: {{categorieName}}-{{scategorieName}}</h4>
+    	
+        <p style="text-align:center;"><button  data-toggle="modal" href="#createSScategorie"  style="color:orange;border-color:;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">creer une nouvelle sous-sous-categorie</button>
+        </p>
+        <div style="margin-left:50px;">
+            
+	        <table datatable="ng" id="mytable" class="row-border hover">
+			    <thead>
+				    <tr>
+				        <th style="text-align:center;">ID</th>
+				        <th style="text-align:center;"">Nom</th>
+				        <th style="text-align:center;">Actions</th>
+				    </tr>
+			    </thead>
+			    <tbody>
+			
+			    	<tr ng-repeat="categorie in  tabSSCategories">
+				        <td style="text-align:center;">{{$index +1}}</td>
+				        <td style="text-align:center;"> {{categorie.name}} </td>
+				        <td style="text-align:center;"><button ng-click="selectSSCategorie(categorie)" data-toggle="modal" href="#modifySSCategorie"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Modifier</button> 
+				        <button ng-click="selectSSCategorie(categorie)" data-toggle="modal" href="#deleteSSCategorie"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button>
+				        </td>
+				    </a>
+			    
+			    
+			    
+				        
+			    </tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="createSScategorie" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Creer une nouvelle sous-categories dans {{scategorieName}}</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Enregistrement des donnees,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        		    <div ng-show="isNotSucceed" style="text-align:center; font-size: 16px; ">
+            			<p style="margin-top:0px; color:red;">une sous categorie portant ce nom existe deja</p>
+        			</div> 
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm"  ng-submit="createSScategorie()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+	            			<div class="form-group">
+	              				<span class="control-label col-lg-3" for="nom">Nom de la categories</span>
+	              				<div class="col-lg-8">
+	                				<input type="input" name="categorie"  ng-model="SSCategorie" class="form-control no-radius" id="categorie" placeholder="Entrez le nom de la sous categorie" required>
+	                				<div class="error" ng-show="myForm.marque.$invalid && myForm.marque.$dirty">
+	                  					<span ng-show="myForm.marque.$error.required">
+	                    					Entrer une valeur
+	                  					</span>
+	                				</div>
+	             			 	</div>
+	            			</div>
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-3 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer la sous-categorie</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="deleteSSCategorie" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Supprimer une sous-sous categorie</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Suppression de la sous-sous-categorie,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div>
+        			<div class="content" ng-show="!isLoading">    
+	          			<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Voulez vous vraiment supprimer la categorie {{selectCategorie.name}} 
+	          			</p>
+	          			<p style="text-align:center;">
+	          				<button ng-click="ConfirmSupprimerSSCategorie()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Supprimer</button> 
+	          				<button ng-click="annulerSuppressionSSCategorie()"  style="color:orange;font-weight:bold" type="button" class="btn btn-default btn-sm no-radius">Annuler
+	          				</button>
+	          			</p>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+  	<div class="modal fade" id="modifySSCategorie" role="dialog" style="margin-top:50px; color:black;">
+  		<div class="modal-dialog">
+    		<div class="modal-content" style="min-height:320px;">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">x</button>
+        			<h4 class="modal-title">Modifier  une  sous-categorie</h4>
+      			</div>
+      			<div class="modal-body">
+        			<div class="loadingPage" ng-show="isLoading">
+          				<div class="col-lg-12" style="margin-top:0px;">
+            				<p style="text-align:center; font-size:16px; color:gray;font-style:italic;">Modification de la sous-categorie ,veuillez patienter...<p>
+            				<p style="text-align:center;">
+              					<img src="images/load3.gif" height="200" width="200">
+            				</p>
+          				</div>
+       		 		</div> 
+        			<div class="content" ng-show="!isLoading">    
+	          			<form  name="myForm1"  ng-submit="modifierSSCategorie()" novalidate class="form-horizontal formulaire" style="padding-top:20px; font-size:14px; margin-left:10px;">
+	            			<div class="form-group">
+	              				<span class="control-label col-lg-3" for="nom">Nom de la categorie</span>
+	              				<div class="col-lg-8">
+	                				<input type="input" name="marque"  ng-model="selectSSCategorie.name" class="form-control no-radius" id="marque" placeholder="Entrez le nom de la categorie" required>
+	                				<div class="error" ng-show="myForm1.marque.$invalid && myForm1.marque.$dirty">
+	                  					<span ng-show="myForm1.marque.$error.required">
+	                    					Entrer une valeur
+	                  					</span>
+	                				</div>
+	             			 	</div>
+	            			</div>
+	               			<div class="form-group">
+	                    		<div class="col-lg-offset-3 col-sm-10">
+	                                <button type="submit" ng-disabled="myForm1.$invalid || isUploading"  class="btn btn-warning no-radius">Enregistrer la modification</button>
+	                    		</div>
+	                		</div>
+	              		</form>
+            		</div>
+          		</div>
+        	</div>
+    	</div>
+  	</div>
+
+</div>

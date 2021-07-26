@@ -1,0 +1,86 @@
+.admin .vertical-menu{
+	padding-left:0px;
+	padding-top: 10px;
+	
+}
+
+.admin .vertical-menu li { 
+    list-style-type: none;
+    border-bottom:1px solid gray;
+    padding-top: 20px; 
+}
+
+.admin  ul li> ul { 
+   z-index: 999;
+   color: blue;
+   position: absolute; 
+   background-color:white ;
+    top: 0;
+    left: 200px;
+    visibility: hidden;
+    height: 350px;
+}
+
+.admin ul li:hover> ul { 
+   z-index: 999;
+   color: blue;
+   position: absolute; 
+   background-color:white ;
+    top: 0;
+    left: 200px;
+    visibility: visible;
+
+}
+
+
+
+.admin .vertical-menu a {
+    color: gray;
+    text-decoration: none;
+    display: block; 
+    text-decoration: none;
+}
+
+
+.admin .vertical-menu a{
+ height: 40px;
+ margin-bottom: 0px;
+ color: black;
+}
+
+.admin .vertical-menu  a {
+
+ text-decoration: none;
+ font-size: 12px;
+ font-weight: bold;
+}
+
+.admin .vertical-menu  a:hover{
+
+	color:orange;
+	text-decoration:none; 
+     cursor:pointer; 
+}
+
+.admin .thumb {
+    width: 24px;
+    height: 24px;
+    float: none;
+    position: relative;
+    top: 0px;
+}
+
+.admin .selectedOption {
+
+   color:green;
+  font-weight:bold;
+   margin-bottom: 10px; 
+   width: 160px;
+}
+
+.admin .nonSelectedOption {
+   color:orange;
+  font-weight:bold;
+   margin-bottom: 10px; 
+   width: 160px;
+}
